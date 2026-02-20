@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glue Note — Sound Design & Audio Branding</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --menu-bg: #000000;
+    --menu-text: #ffffffdd;
+    --sticky-yellow: #FDFD96;
+    --dock-bg: rgba(255, 255, 255, 0.25);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    background: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ========== MENU BAR ========== */
+  .menu-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: var(--menu-bg);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    z-index: 1000;
+    font-size: 13px;
+    color: var(--menu-text);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .menu-bar .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-right: 20px;
+    cursor: default;
+  }
+
+  .menu-bar .logo-area img {
+    width: 16px;
+    height: 16px;
+    filter: invert(1);
+    opacity: 0.92;
+  }
+
+  .menu-bar .logo-area span {
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+
+  .menu-bar .menu-items {
+    display: flex;
+    gap: 18px;
+  }
+
+  .menu-bar .menu-items span {
+    cursor: default;
+    opacity: 0.85;
+    font-weight: 400;
+    font-size: 13px;
+    transition: opacity 0.15s;
+  }
+
+  .menu-bar .menu-items span:hover {
+    opacity: 1;
+  }
+
+  .menu-bar .menu-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    opacity: 0.85;
+    font-weight: 400;
+  }
+
+  .menu-bar .menu-right .wifi-icon svg {
+    width: 14px; height: 14px; fill: #ffffffcc; vertical-align: middle;
+  }
+
+  /* ========== DESKTOP ========== */
+  .desktop {
+    position: relative;
+    min-height: calc(100vh - 28px);
+    margin-top: 28px;
+    overflow: hidden;
+  }
+
+  /* ========== STICKIES ========== */
+  .sticky {
+    width: 320px;
+    border-radius: 2px;
+    box-shadow:
+      0 4px 16px rgba(0,0,0,0.10),
+      0 1px 4px rgba(0,0,0,0.06),
+      3px 6px 20px rgba(0,0,0,0.07);
+    overflow: visible;
+    cursor: grab;
+    transition: box-shadow 0.25s ease;
+    position: absolute;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .sticky:active { cursor: grabbing; }
+
+  .sticky.dragging {
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.18),
+      0 6px 20px rgba(0,0,0,0.12);
+    z-index: 100;
+  }
+
+  .sticky:hover {
+    box-shadow:
+      0 12px 36px rgba(0,0,0,0.14),
+      0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .sticky-body {
+    background: var(--sticky-yellow);
+    border-radius: 2px;
+    overflow: hidden;
+    padding: 0 16px 22px;
+  }
+
+  /* Adhesive strip at top */
+  .sticky::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 24px;
+    background: linear-gradient(180deg, #eded78 0%, #f2f288 50%, var(--sticky-yellow) 100%);
+    border-radius: 2px 2px 0 0;
+    z-index: 1;
+    opacity: 0.6;
+  }
+
+  /* Peeling corner — bottom right */
+  .sticky::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 18px 18px;
+    border-color: transparent transparent #ffffff transparent;
+    z-index: 3;
+    filter: drop-shadow(-2px -2px 3px rgba(0,0,0,0.08));
+  }
+
+  /* Shadow under the curl */
+  .sticky .peel-shadow {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(ellipse at 100% 100%, rgba(0,0,0,0.12) 0%, transparent 70%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .sticky-body-top-spacer {
+    height: 16px;
+  }
+
+  .sticky-image {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    position: relative;
+    background: #1a1a2e;
+  }
+
+  .sticky-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Placeholder art for the images */
+  .sticky-image .placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sticky:nth-child(1) .placeholder {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 30%, #2d1b4e 60%, #1e0a2e 100%);
+  }
+  .sticky:nth-child(2) .placeholder {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 30%, #1f2937 60%, #111827 100%);
+  }
+  .sticky:nth-child(3) .placeholder {
+    background: linear-gradient(135deg, #1a0a0a 0%, #2d1616 30%, #3d1f1f 60%, #1a0a0a 100%);
+  }
+
+  .placeholder-text {
+    color: rgba(255,255,255,0.15);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    z-index: 1;
+  }
+
+  /* Decorative elements inside placeholders */
+  .placeholder::before {
+    content: '';
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    top: -10%;
+    left: -10%;
+    opacity: 0.08;
+  }
+
+  .sticky:nth-child(1) .placeholder::before {
+    background: radial-gradient(circle at 30% 70%, #7c3aed 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, #06b6d4 0%, transparent 50%);
+  }
+  .sticky:nth-child(2) .placeholder::before {
+    background: radial-gradient(circle at 50% 50%, #10b981 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, #3b82f6 0%, transparent 40%);
+  }
+  .sticky:nth-child(3) .placeholder::before {
+    background: radial-gradient(circle at 60% 40%, #ef4444 0%, transparent 50%),
+                radial-gradient(circle at 30% 70%, #f59e0b 0%, transparent 40%);
+  }
+
+  .sticky-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .sticky-details {
+    font-size: 10.5px;
+    color: #1d1d1fbb;
+    line-height: 1.65;
+    font-weight: 400;
+  }
+
+  .sticky-details .detail-line {
+    display: block;
+    margin-bottom: 1px;
+  }
+
+  .sticky-details .detail-line::before {
+    content: '— ';
+    opacity: 0.5;
+  }
+
+  .sticky-footer {
+    font-size: 9.5px;
+    color: #1d1d1f88;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    font-style: italic;
+  }
+
+  /* ========== DOCK ========== */
+  .dock-container {
+    position: fixed;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+
+  .dock {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  .dock-divider {
+    width: 1px;
+    height: 42px;
+    background: rgba(0,0,0,0.12);
+    margin: 0 4px;
+    align-self: center;
+  }
+
+  .dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: default;
+    position: relative;
+  }
+
+  .dock-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+
+  .dock-item:hover .dock-icon {
+    transform: translateY(-12px) scale(1.25);
+  }
+
+  .dock-item:hover .dock-tooltip {
+    opacity: 1;
+    transform: translateY(-8px);
+  }
+
+  .dock-tooltip {
+    position: absolute;
+    top: -32px;
+    background: rgba(30,30,30,0.85);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s;
+    transform: translateY(0);
+  }
+
+  .dock-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(30,30,30,0.85);
+  }
+
+  /* Dock app icons */
+  .icon-instagram {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    border-radius: 12px;
+  }
+
+  .icon-instagram svg { width: 30px; height: 30px; }
+
+  .dock-item a {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .icon-mail {
+    background: linear-gradient(180deg, #1E90FF 0%, #007AFF 100%);
+    border-radius: 12px;
+  }
+
+  .icon-mail svg { width: 34px; height: 34px; }
+
+  .icon-finder {
+    background: linear-gradient(180deg, #5AC8FA 0%, #007AFF 100%);
+    border-radius: 12px;
+  }
+
+  .icon-finder svg { width: 30px; height: 30px; }
+
+  .icon-stickies {
+    background: var(--sticky-yellow);
+    border-radius: 12px;
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-stickies::after {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background: #e8e870;
+    border-radius: 2px;
+    box-shadow: 2px 2px 0 #d4d440, inset 0 0 0 1px rgba(0,0,0,0.05);
+  }
+
+  /* Active dot under dock icons */
+  .dock-active-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.4);
+    margin-top: 3px;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 1060px) {
+    .sticky { width: 280px; }
+  }
+
+  @media (max-width: 700px) {
+    .sticky { width: 260px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MENU BAR -->
+<div class="menu-bar">
+  <div class="logo-area">
+    <img src="GLUENOTE LOGO MAIN01.png" alt="Glue Note">
+    <span>Glue Note</span>
+  </div>
+  <div class="menu-items">
+    <span>Cases</span>
+    <span>Services</span>
+    <span>About</span>
+    <span>Contact</span>
+  </div>
+  <div class="menu-right">
+    <span class="wifi-icon">
+      <svg viewBox="0 0 24 24"><path d="M1.42 9.76a14.08 14.08 0 0 1 21.16 0l-1.42 1.42A12.06 12.06 0 0 0 2.84 11.18L1.42 9.76zM5.11 13.49a9.05 9.05 0 0 1 13.78 0l-1.42 1.42a7.03 7.03 0 0 0-10.94 0l-1.42-1.42zM8.82 17.2a4.02 4.02 0 0 1 6.36 0l-3.18 3.18-3.18-3.18z"/></svg>
+    </span>
+    <span id="clock"></span>
+  </div>
+</div>
+
+<!-- DESKTOP WITH STICKIES -->
+<div class="desktop">
+
+  <!-- Sticky 1 — Rekonfa -->
+  <div class="sticky">
+    <div class="peel-shadow"></div>
+    <div class="sticky-body">
+      <div class="sticky-body-top-spacer"></div>
+      <div class="sticky-image">
+        <img src="rekonfa.png?v=2" alt="Yandex Rekonfa">
+      </div>
+      <div class="sticky-title">Audio Identity for Yandex Rekonfa</div>
+      <div class="sticky-details">
+        <span class="detail-line">Main Theme</span>
+        <span class="detail-line">Thematic Adaptation Suite (KV, Loop, Walk-On, Stinger, IDs)</span>
+        <span class="detail-line">Mixing & Mastering for venue & digital</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky 2 — Kino TV -->
+  <div class="sticky">
+    <div class="peel-shadow"></div>
+    <div class="sticky-body">
+      <div class="sticky-body-top-spacer"></div>
+      <div class="sticky-image">
+        <img src="kinotv.png" alt="Kino TV">
+      </div>
+      <div class="sticky-title">Audio Identity for Kino TV</div>
+      <div class="sticky-details">
+        <span class="detail-line">Audio Logo</span>
+        <span class="detail-line">Main Theme</span>
+        <span class="detail-line">Thematic Adaptation Suite for various programs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky 3 — Roach Racing Club -->
+  <div class="sticky">
+    <div class="peel-shadow"></div>
+    <div class="sticky-body">
+      <div class="sticky-body-top-spacer"></div>
+      <div class="sticky-image">
+        <img src="roachesss.jpg" alt="Roach Racing Club">
+      </div>
+      <div class="sticky-title">Audio Identity for Roach Racing Club</div>
+      <div class="sticky-details">
+        <span class="detail-line">Main Theme: Music & Sound Design</span>
+        <span class="detail-line">UX Sound Design System</span>
+        <span class="detail-line">Original Soundtrack Suite for Each Racing Track</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- DOCK -->
+<div class="dock-container">
+  <div class="dock">
+    <!-- Stickies -->
+    <div class="dock-item">
+      <div class="dock-tooltip">Stickies</div>
+      <div class="dock-icon icon-stickies"></div>
+      <div class="dock-active-dot"></div>
+    </div>
+
+    <div class="dock-divider"></div>
+
+    <!-- Instagram -->
+    <div class="dock-item">
+      <div class="dock-tooltip">Instagram</div>
+      <a href="https://instagram.com/glue.note" target="_blank" rel="noopener">
+        <div class="dock-icon icon-instagram">
+          <svg viewBox="0 0 100 100" fill="none">
+            <rect x="18" y="18" width="64" height="64" rx="18" stroke="#fff" stroke-width="5" fill="none"/>
+            <circle cx="50" cy="50" r="16" stroke="#fff" stroke-width="5" fill="none"/>
+            <circle cx="70" cy="30" r="4" fill="#fff"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+
+    <!-- Mail -->
+    <div class="dock-item">
+      <div class="dock-tooltip">Mail</div>
+      <div class="dock-icon icon-mail">
+        <svg viewBox="0 0 100 100" fill="none">
+          <rect x="12" y="25" width="76" height="50" rx="6" fill="#fff" opacity="0.95"/>
+          <path d="M12 31 L50 56 L88 31" stroke="#2196F3" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 75 L36 52" stroke="#2196F3" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M88 75 L64 52" stroke="#2196F3" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Live clock =====
+  function updateClock() {
+    const now = new Date();
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const h = now.getHours();
+    const m = now.getMinutes().toString().padStart(2,'0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    document.getElementById('clock').textContent =
+      `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()}  ${h12}:${m} ${ampm}`;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  // ===== Position stickies on load =====
+  function layoutStickies() {
+    const stickies = document.querySelectorAll('.sticky');
+    const desktop = document.querySelector('.desktop');
+    const dw = desktop.offsetWidth;
+    const dh = desktop.offsetHeight;
+    const sw = 320;
+    const totalW = stickies.length * sw + (stickies.length - 1) * 32;
+    const startX = Math.max(40, (dw - totalW) / 2);
+    const rotations = [-1.5, 0.8, -0.5];
+    const yOffsets = [40, 70, 50];
+
+    stickies.forEach((s, i) => {
+      s.style.left = (startX + i * (sw + 32)) + 'px';
+      s.style.top = yOffsets[i] + 'px';
+      s.style.transform = 'rotate(' + rotations[i] + 'deg)';
+      s.dataset.rotation = rotations[i];
+    });
+  }
+  layoutStickies();
+  window.addEventListener('resize', layoutStickies);
+
+  // ===== Drag logic =====
+  let zCounter = 10;
+
+  document.querySelectorAll('.sticky').forEach(sticky => {
+    let isDragging = false;
+    let startX, startY, origX, origY;
+
+    sticky.addEventListener('mousedown', e => {
+      if (e.target.closest('a')) return;
+      isDragging = true;
+      sticky.classList.add('dragging');
+      zCounter++;
+      sticky.style.zIndex = zCounter;
+
+      startX = e.clientX;
+      startY = e.clientY;
+      origX = parseInt(sticky.style.left) || 0;
+      origY = parseInt(sticky.style.top) || 0;
+
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      sticky.style.left = (origX + dx) + 'px';
+      sticky.style.top = (origY + dy) + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      sticky.classList.remove('dragging');
+    });
+
+    // Touch support
+    sticky.addEventListener('touchstart', e => {
+      if (e.target.closest('a')) return;
+      isDragging = true;
+      sticky.classList.add('dragging');
+      zCounter++;
+      sticky.style.zIndex = zCounter;
+
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+      origX = parseInt(sticky.style.left) || 0;
+      origY = parseInt(sticky.style.top) || 0;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      const t = e.touches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      sticky.style.left = (origX + dx) + 'px';
+      sticky.style.top = (origY + dy) + 'px';
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      sticky.classList.remove('dragging');
+    });
+  });
+</script>
+
+</body>
+</html>

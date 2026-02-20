@@ -185,75 +185,21 @@
     height: 16px;
   }
 
-  .sticky-image {
+  .sticky-video {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 12px;
     position: relative;
-    background: #1a1a2e;
+    background: #000;
   }
 
-  .sticky-image img {
+  .sticky-video iframe {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    border: none;
     display: block;
-  }
-
-  /* Placeholder art for the images */
-  .sticky-image .placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .sticky:nth-child(1) .placeholder {
-    background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 30%, #2d1b4e 60%, #1e0a2e 100%);
-  }
-  .sticky:nth-child(2) .placeholder {
-    background: linear-gradient(135deg, #0d1117 0%, #161b22 30%, #1f2937 60%, #111827 100%);
-  }
-  .sticky:nth-child(3) .placeholder {
-    background: linear-gradient(135deg, #1a0a0a 0%, #2d1616 30%, #3d1f1f 60%, #1a0a0a 100%);
-  }
-
-  .placeholder-text {
-    color: rgba(255,255,255,0.15);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-weight: 500;
-    z-index: 1;
-  }
-
-  /* Decorative elements inside placeholders */
-  .placeholder::before {
-    content: '';
-    position: absolute;
-    width: 120%;
-    height: 120%;
-    top: -10%;
-    left: -10%;
-    opacity: 0.08;
-  }
-
-  .sticky:nth-child(1) .placeholder::before {
-    background: radial-gradient(circle at 30% 70%, #7c3aed 0%, transparent 50%),
-                radial-gradient(circle at 70% 30%, #06b6d4 0%, transparent 50%);
-  }
-  .sticky:nth-child(2) .placeholder::before {
-    background: radial-gradient(circle at 50% 50%, #10b981 0%, transparent 50%),
-                radial-gradient(circle at 20% 80%, #3b82f6 0%, transparent 40%);
-  }
-  .sticky:nth-child(3) .placeholder::before {
-    background: radial-gradient(circle at 60% 40%, #ef4444 0%, transparent 50%),
-                radial-gradient(circle at 30% 70%, #f59e0b 0%, transparent 40%);
   }
 
   .sticky-title {
@@ -437,8 +383,36 @@
     .sticky { width: 280px; }
   }
 
-  @media (max-width: 700px) {
-    .sticky { width: 260px; }
+  @media (max-width: 768px) {
+    .menu-bar .menu-items { display: none; }
+    .menu-bar .menu-right { gap: 10px; }
+
+    .desktop {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 16px 100px;
+      min-height: auto;
+    }
+
+    .sticky {
+      position: relative !important;
+      left: auto !important;
+      top: auto !important;
+      transform: none !important;
+      width: calc(100vw - 32px);
+      max-width: 400px;
+      cursor: default;
+    }
+
+    .sticky:active { cursor: default; }
+    .sticky.dragging { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+
+    .dock { padding: 4px 8px; gap: 4px; }
+    .dock-icon { width: 44px; height: 44px; }
+    .dock-divider { height: 34px; }
+    .dock-container { bottom: 6px; }
   }
 </style>
 </head>
@@ -472,8 +446,8 @@
     <div class="peel-shadow"></div>
     <div class="sticky-body">
       <div class="sticky-body-top-spacer"></div>
-      <div class="sticky-image">
-        <img src="rekonfa.png?v=2" alt="Yandex Rekonfa">
+      <div class="sticky-video">
+        <iframe src="https://player.vimeo.com/video/1138135407?badge=0&autopause=0&player_id=0&app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowfullscreen></iframe>
       </div>
       <div class="sticky-title">Audio Identity for Yandex Rekonfa</div>
       <div class="sticky-details">
@@ -489,8 +463,8 @@
     <div class="peel-shadow"></div>
     <div class="sticky-body">
       <div class="sticky-body-top-spacer"></div>
-      <div class="sticky-image">
-        <img src="kinotv.png" alt="Kino TV">
+      <div class="sticky-video">
+        <iframe src="https://player.vimeo.com/video/1138135407?badge=0&autopause=0&player_id=0&app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowfullscreen></iframe>
       </div>
       <div class="sticky-title">Audio Identity for Kino TV</div>
       <div class="sticky-details">
@@ -506,8 +480,8 @@
     <div class="peel-shadow"></div>
     <div class="sticky-body">
       <div class="sticky-body-top-spacer"></div>
-      <div class="sticky-image">
-        <img src="roachesss.jpg" alt="Roach Racing Club">
+      <div class="sticky-video">
+        <iframe src="https://player.vimeo.com/video/1166741271?badge=0&autopause=0&player_id=0&app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowfullscreen></iframe>
       </div>
       <div class="sticky-title">Audio Identity for Roach Racing Club</div>
       <div class="sticky-details">
@@ -578,12 +552,22 @@
   setInterval(updateClock, 10000);
 
   // ===== Position stickies on load =====
+  function isMobile() { return window.innerWidth <= 768; }
+
   function layoutStickies() {
     const stickies = document.querySelectorAll('.sticky');
+    if (isMobile()) {
+      stickies.forEach(s => {
+        s.style.left = '';
+        s.style.top = '';
+        s.style.transform = '';
+        s.style.zIndex = '';
+      });
+      return;
+    }
     const desktop = document.querySelector('.desktop');
     const dw = desktop.offsetWidth;
-    const dh = desktop.offsetHeight;
-    const sw = 320;
+    const sw = Math.min(320, dw * 0.28);
     const totalW = stickies.length * sw + (stickies.length - 1) * 32;
     const startX = Math.max(40, (dw - totalW) / 2);
     const rotations = [-1.5, 0.8, -0.5];
@@ -607,6 +591,7 @@
     let startX, startY, origX, origY;
 
     sticky.addEventListener('mousedown', e => {
+      if (isMobile()) return;
       if (e.target.closest('a')) return;
       isDragging = true;
       sticky.classList.add('dragging');
@@ -637,6 +622,7 @@
 
     // Touch support
     sticky.addEventListener('touchstart', e => {
+      if (isMobile()) return;
       if (e.target.closest('a')) return;
       isDragging = true;
       sticky.classList.add('dragging');

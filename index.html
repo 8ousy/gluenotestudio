@@ -484,6 +484,23 @@
     margin-bottom: 18px;
   }
 
+  .modal-contact-link {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 500;
+    color: #007AFF;
+    background: rgba(0,122,255,0.08);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .modal-contact-link:hover {
+    background: rgba(0,122,255,0.15);
+  }
+
   .modal-email {
     display: inline-block;
     font-size: 15px;
@@ -704,7 +721,7 @@
 <div class="modal-overlay" id="aboutModal" onclick="if(event.target===this)this.classList.remove('active')">
   <div class="modal">
     <div class="modal-title">Glue Note</div>
-    <div class="modal-text">Sound Design & Audio Branding studio. We craft sonic identities, original soundtracks, and UX sound systems for brands and products.</div>
+    <div class="modal-text">Glue Note is a sound design studio founded by Evgeny Fadeev and Ildar Zaynetdinov.<br><br>With over 15 years of experience in music and audio, we develop sonic identities and UX sound systems for brands and cultural projects.</div>
     <div class="modal-divider"></div>
     <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">OK</button>
   </div>
@@ -715,7 +732,8 @@
   <div class="modal">
     <div class="modal-title">Contact</div>
     <div class="modal-text">Drop us a line</div>
-    <div class="modal-email" onclick="navigator.clipboard.writeText('hello@gluenotestudio.com');this.dataset.copied='true'" id="emailCopy">hello@gluenotestudio.com</div>
+    <a href="https://t.me/low808" target="_blank" class="modal-contact-link" id="tgLink">Telegram</a>
+    <div class="modal-email" onclick="navigator.clipboard.writeText('gluenotestudio@gmail.com');this.dataset.copied='true'" id="emailCopy">gluenotestudio@gmail.com</div>
     <div class="modal-divider"></div>
     <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">OK</button>
   </div>

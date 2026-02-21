@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Glue Note — Sound Design & Audio Branding</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap');
 
@@ -422,38 +424,118 @@
 
   .icon-mail svg { width: 34px; height: 34px; }
 
-  .icon-finder {
-    background: linear-gradient(180deg, #5AC8FA 0%, #007AFF 100%);
+  .icon-telegram {
+    background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%);
     border-radius: 12px;
   }
 
-  .icon-finder svg { width: 30px; height: 30px; }
+  .icon-telegram svg { width: 30px; height: 30px; }
 
-  .icon-stickies {
-    background: var(--sticky-yellow);
-    border-radius: 12px;
-    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.06);
+  /* ========== iOS MODAL ========== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 2000;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
   }
 
-  .icon-stickies::after {
-    content: '';
-    width: 24px;
-    height: 24px;
-    background: #e8e870;
-    border-radius: 2px;
-    box-shadow: 2px 2px 0 #d4d440, inset 0 0 0 1px rgba(0,0,0,0.05);
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
   }
 
-  /* Active dot under dock icons */
-  .dock-active-dot {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.4);
-    margin-top: 3px;
+  .modal {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-radius: 14px;
+    width: 300px;
+    padding: 24px 20px 16px;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    transform: scale(0.95);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .modal-overlay.active .modal {
+    transform: scale(1);
+  }
+
+  .modal-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .modal-text {
+    font-size: 13px;
+    color: #1d1d1faa;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+
+  .modal-email {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 500;
+    color: #007AFF;
+    background: rgba(0,122,255,0.08);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .modal-email:hover {
+    background: rgba(0,122,255,0.15);
+  }
+
+  .modal-email:active::after {
+    content: ' ✓ Copied';
+    font-size: 11px;
+    color: #34C759;
+  }
+
+  .modal-divider {
+    height: 1px;
+    background: rgba(0,0,0,0.08);
+    margin: 0 -20px;
+  }
+
+  .modal-close {
+    display: block;
+    width: calc(100% + 40px);
+    margin: 0 -20px -16px;
+    padding: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #007AFF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 0 0 14px 14px;
+    transition: background 0.15s;
+    font-family: inherit;
+  }
+
+  .modal-close:hover {
+    background: rgba(0,0,0,0.03);
+  }
+
+  .menu-bar .menu-items span.clickable {
+    cursor: pointer;
   }
 
   /* ========== RESPONSIVE ========== */
@@ -489,7 +571,6 @@
 
     .dock { padding: 4px 8px; gap: 4px; }
     .dock-icon { width: 44px; height: 44px; }
-    .dock-divider { height: 34px; }
     .dock-container { bottom: 6px; }
   }
 </style>
@@ -503,10 +584,8 @@
     <span>Glue Note</span>
   </div>
   <div class="menu-items">
-    <span>Cases</span>
-    <span>Services</span>
-    <span>About</span>
-    <span>Contact</span>
+    <span class="clickable" onclick="document.getElementById('aboutModal').classList.add('active')">About</span>
+    <span class="clickable" onclick="document.getElementById('contactModal').classList.add('active')">Contact</span>
   </div>
   <div class="menu-right">
     <span class="wifi-icon">
@@ -578,14 +657,19 @@
 <!-- DOCK -->
 <div class="dock-container">
   <div class="dock">
-    <!-- Stickies -->
+    <!-- Telegram -->
     <div class="dock-item">
-      <div class="dock-tooltip">Stickies</div>
-      <div class="dock-icon icon-stickies"></div>
-      <div class="dock-active-dot"></div>
+      <div class="dock-tooltip">Telegram</div>
+      <a href="http://t.me/low808" target="_blank" rel="noopener">
+        <div class="dock-icon icon-telegram">
+          <svg viewBox="0 0 100 100" fill="none">
+            <path d="M20 50 L78 28 L65 75 L48 58 Z" fill="#fff" opacity="0.95"/>
+            <path d="M48 58 L78 28" stroke="#2AABEE" stroke-width="2.5"/>
+            <path d="M48 58 L42 73 L45 59" fill="#fff" opacity="0.7"/>
+          </svg>
+        </div>
+      </a>
     </div>
-
-    <div class="dock-divider"></div>
 
     <!-- Instagram -->
     <div class="dock-item">
@@ -604,7 +688,7 @@
     <!-- Mail -->
     <div class="dock-item">
       <div class="dock-tooltip">Mail</div>
-      <div class="dock-icon icon-mail">
+      <div class="dock-icon icon-mail" style="cursor:pointer" onclick="document.getElementById('contactModal').classList.add('active')">
         <svg viewBox="0 0 100 100" fill="none">
           <rect x="12" y="25" width="76" height="50" rx="6" fill="#fff" opacity="0.95"/>
           <path d="M12 31 L50 56 L88 31" stroke="#2196F3" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -616,7 +700,35 @@
   </div>
 </div>
 
+<!-- ABOUT MODAL -->
+<div class="modal-overlay" id="aboutModal" onclick="if(event.target===this)this.classList.remove('active')">
+  <div class="modal">
+    <div class="modal-title">Glue Note</div>
+    <div class="modal-text">Sound Design & Audio Branding studio. We craft sonic identities, original soundtracks, and UX sound systems for brands and products.</div>
+    <div class="modal-divider"></div>
+    <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">OK</button>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactModal" onclick="if(event.target===this)this.classList.remove('active')">
+  <div class="modal">
+    <div class="modal-title">Contact</div>
+    <div class="modal-text">Drop us a line</div>
+    <div class="modal-email" onclick="navigator.clipboard.writeText('hello@gluenotestudio.com');this.dataset.copied='true'" id="emailCopy">hello@gluenotestudio.com</div>
+    <div class="modal-divider"></div>
+    <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">OK</button>
+  </div>
+</div>
+
 <script>
+  // ===== Copy email feedback =====
+  document.getElementById('emailCopy').addEventListener('click', function() {
+    const orig = this.textContent;
+    this.textContent = 'Copied ✓';
+    setTimeout(() => { this.textContent = orig; }, 1500);
+  });
+
   // ===== Video click-to-play =====
   document.querySelectorAll('.sticky-video[data-vimeo]').forEach(container => {
     container.addEventListener('click', function() {

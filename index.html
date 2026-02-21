@@ -410,6 +410,9 @@
     border-radius: 12px;
     overflow: hidden;
   }
+  .icon-telegram img {
+    transform: scale(1.3);
+  }
 
   /* ========== iOS MODAL ========== */
   .modal-overlay {
@@ -693,7 +696,7 @@
 <div class="modal-overlay" id="aboutModal" onclick="if(event.target===this)this.classList.remove('active')">
   <div class="modal">
     <div class="modal-title"><img src="logo-transparent.png" alt="Glue Note" style="width:28px;height:28px;vertical-align:middle;margin-right:6px;object-fit:contain;">Glue Note</div>
-    <div class="modal-text">Glue Note is a sound design studio founded by Evgeny Fadeev and Ildar Zaynetdinov.<br><br>With over 15 years of experience in music and audio, we develop sonic identities and UX sound systems for brands and cultural projects.</div>
+    <div class="modal-text">Glue Note is a sound design studio founded by <a href="https://www.instagram.com/flaty_" target="_blank" style="color:#007AFF;text-decoration:none;">Evgeny Fadeev</a> and <a href="http://instagram.com/lowbob" target="_blank" style="color:#007AFF;text-decoration:none;">Ildar Zaynetdinov</a>.<br><br>With over 15 years of experience in music and audio, we develop sonic identities and UX sound systems for brands and cultural projects.</div>
     <div class="modal-divider"></div>
     <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">OK</button>
   </div>

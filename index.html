@@ -386,11 +386,10 @@
 
   /* Dock app icons */
   .icon-instagram {
-    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    background: transparent;
     border-radius: 12px;
+    overflow: hidden;
   }
-
-  .icon-instagram svg { width: 30px; height: 30px; }
 
   .dock-item a {
     text-decoration: none;
@@ -407,11 +406,10 @@
   .icon-mail svg { width: 34px; height: 34px; }
 
   .icon-telegram {
-    background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%);
+    background: transparent;
     border-radius: 12px;
+    overflow: hidden;
   }
-
-  .icon-telegram svg { width: 30px; height: 30px; }
 
   /* ========== iOS MODAL ========== */
   .modal-overlay {
@@ -579,7 +577,7 @@
 <!-- MENU BAR -->
 <div class="menu-bar">
   <div class="logo-area">
-    <img src="GLUENOTE LOGO MAIN01.png" alt="Glue Note">
+    <img src="logo-transparent.png" alt="Glue Note">
     <span>Glue Note</span>
   </div>
   <div class="menu-items">
@@ -661,11 +659,7 @@
       <div class="dock-tooltip">Telegram</div>
       <a href="http://t.me/low808" target="_blank" rel="noopener">
         <div class="dock-icon icon-telegram">
-          <svg viewBox="0 0 100 100" fill="none">
-            <path d="M20 50 L78 28 L65 75 L48 58 Z" fill="#fff" opacity="0.95"/>
-            <path d="M48 58 L78 28" stroke="#2AABEE" stroke-width="2.5"/>
-            <path d="M48 58 L42 73 L45 59" fill="#fff" opacity="0.7"/>
-          </svg>
+          <img src="telegram-logo-telegram-logo-transparent-telegram-icon-transparent-free-free-png.webp" alt="Telegram" style="width:100%;height:100%;object-fit:contain;">
         </div>
       </a>
     </div>
@@ -675,11 +669,7 @@
       <div class="dock-tooltip">Instagram</div>
       <a href="https://instagram.com/glue.note" target="_blank" rel="noopener">
         <div class="dock-icon icon-instagram">
-          <svg viewBox="0 0 100 100" fill="none">
-            <rect x="18" y="18" width="64" height="64" rx="18" stroke="#fff" stroke-width="5" fill="none"/>
-            <circle cx="50" cy="50" r="16" stroke="#fff" stroke-width="5" fill="none"/>
-            <circle cx="70" cy="30" r="4" fill="#fff"/>
-          </svg>
+          <img src="Instagram_logo_2016.svg.png" alt="Instagram" style="width:100%;height:100%;object-fit:contain;">
         </div>
       </a>
     </div>
@@ -702,7 +692,7 @@
 <!-- ABOUT MODAL -->
 <div class="modal-overlay" id="aboutModal" onclick="if(event.target===this)this.classList.remove('active')">
   <div class="modal">
-    <div class="modal-title"><img src="GLUENOTE LOGO MAIN01.png" alt="Glue Note" style="width:28px;height:28px;vertical-align:middle;margin-right:6px;object-fit:contain;">Glue Note</div>
+    <div class="modal-title"><img src="logo-transparent.png" alt="Glue Note" style="width:28px;height:28px;vertical-align:middle;margin-right:6px;object-fit:contain;">Glue Note</div>
     <div class="modal-text">Glue Note is a sound design studio founded by Evgeny Fadeev and Ildar Zaynetdinov.<br><br>With over 15 years of experience in music and audio, we develop sonic identities and UX sound systems for brands and cultural projects.</div>
     <div class="modal-divider"></div>
     <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">OK</button>

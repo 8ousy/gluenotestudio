@@ -187,19 +187,97 @@
 
   .sticky-video {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    padding: 56.25% 0 0 0;
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 12px;
     position: relative;
     background: #000;
+    cursor: pointer;
   }
 
   .sticky-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     border: none;
+  }
+
+  /* Thumbnail overlay */
+  .video-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+  }
+
+  .video-thumb.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .video-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
+  }
+
+  /* Dark overlay on thumbnail */
+  .video-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    transition: background 0.2s;
+  }
+
+  .sticky-video:hover .video-thumb::after {
+    background: rgba(0,0,0,0.15);
+  }
+
+  /* Play button */
+  .play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 50%;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .sticky-video:hover .play-btn {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  }
+
+  .play-btn::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent #1d1d1f;
+    margin-left: 3px;
+  }
+
+  .video-thumb.hidden + .play-btn {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .sticky-title {
@@ -446,8 +524,9 @@
     <div class="peel-shadow"></div>
     <div class="sticky-body">
       <div class="sticky-body-top-spacer"></div>
-      <div class="sticky-video">
-        <iframe src="https://player.vimeo.com/video/1138135407?badge=0&autopause=0&player_id=0&app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowfullscreen></iframe>
+      <div class="sticky-video" data-vimeo="1138135407">
+        <div class="video-thumb"><img src="rekonfa.png?v=2" alt="Yandex Rekonfa"></div>
+        <div class="play-btn"></div>
       </div>
       <div class="sticky-title">Audio Identity for Yandex Rekonfa</div>
       <div class="sticky-details">
@@ -463,8 +542,9 @@
     <div class="peel-shadow"></div>
     <div class="sticky-body">
       <div class="sticky-body-top-spacer"></div>
-      <div class="sticky-video">
-        <iframe src="https://player.vimeo.com/video/398775640?badge=0&autopause=0&player_id=0&app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowfullscreen></iframe>
+      <div class="sticky-video" data-vimeo="398775640">
+        <div class="video-thumb"><img src="kinotv.png" alt="Kino TV"></div>
+        <div class="play-btn"></div>
       </div>
       <div class="sticky-title">Audio Identity for Kino TV</div>
       <div class="sticky-details">
@@ -480,8 +560,9 @@
     <div class="peel-shadow"></div>
     <div class="sticky-body">
       <div class="sticky-body-top-spacer"></div>
-      <div class="sticky-video">
-        <iframe src="https://player.vimeo.com/video/1166741271?badge=0&autopause=0&player_id=0&app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowfullscreen></iframe>
+      <div class="sticky-video" data-vimeo="1166741271">
+        <div class="video-thumb"><img src="roachesss.jpg" alt="Roach Racing Club"></div>
+        <div class="play-btn"></div>
       </div>
       <div class="sticky-title">Audio Identity for Roach Racing Club</div>
       <div class="sticky-details">
@@ -536,6 +617,28 @@
 </div>
 
 <script>
+  // ===== Video click-to-play =====
+  document.querySelectorAll('.sticky-video[data-vimeo]').forEach(container => {
+    container.addEventListener('click', function() {
+      const id = this.dataset.vimeo;
+      const thumb = this.querySelector('.video-thumb');
+      const btn = this.querySelector('.play-btn');
+      if (thumb.classList.contains('hidden')) return;
+
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://player.vimeo.com/video/' + id + '?autoplay=1&badge=0&autopause=0&player_id=0&app_id=58479';
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+      this.appendChild(iframe);
+
+      thumb.classList.add('hidden');
+      btn.style.opacity = '0';
+      btn.style.pointerEvents = 'none';
+    });
+  });
+
   // ===== Live clock =====
   function updateClock() {
     const now = new Date();
